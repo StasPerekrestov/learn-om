@@ -28,7 +28,7 @@
     :builds [{:id "myproject"
               :source-paths ["src"]
               :compiler {
-                :output-to "myproject.js"
-                :output-dir "out"
+                :output-to "resources/public/js/myproject.js"
+                :output-dir "resources/public/js/out"
                 :optimizations :none
                 :source-map true}}]})

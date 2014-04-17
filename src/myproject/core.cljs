@@ -23,7 +23,7 @@
   (.log js/console (str s)))
 
 (go
-  (log (<! (GET "http://dimagog.github.io/pages.html"))))
+  (log (<! (GET "/index.html"))))
 
 
 ; todo is a cursor and we are outside of render.
