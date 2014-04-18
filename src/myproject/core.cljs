@@ -14,16 +14,22 @@
   (let [ch (chan 1)]
     (xhr/send url
               (fn [event]
-                (let [res (-> event .-target .getResponseText)]
+                (let [res (-> event .-target .getResponseJson)]
                   (go (>! ch res)
                       (close! ch)))))
     ch))
 
-(defn log [s]
+(defn log
+  [s]
   (.log js/console (str s)))
 
+(enable-console-print!)
+
 (go
-  (log (<! (GET "/"))))
+  (let [t (js->clj (<! (GET "/")) :keywordize-keys true)]
+    (log "result is: ")
+    (print "Hello world" t)
+    ))
 
 
 ; todo is a cursor and we are outside of render.
@@ -45,5 +51,3 @@
  todo-list-component
   app-state
   {:target (. js/document (getElementById "app"))})
-
-(log "Hello world")
