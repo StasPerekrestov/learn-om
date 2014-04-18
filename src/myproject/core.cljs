@@ -23,7 +23,7 @@
   (.log js/console (str s)))
 
 (go
-  (log (<! (GET "/index.html"))))
+  (log (<! (GET "/"))))
 
 
 ; todo is a cursor and we are outside of render.
@@ -45,3 +45,5 @@
  todo-list-component
   app-state
   {:target (. js/document (getElementById "app"))})
+
+(log "Hello world")

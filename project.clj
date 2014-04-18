@@ -9,8 +9,7 @@
                  [compojure "1.1.6"]
                  [hiccup "1.0.5"]
                  [ring-server "0.3.1"]
-                 [org.clojure/data.json "0.2.4"]
-                 [ring/ring-json "0.3.0"]]
+                 [ring/ring-json "0.3.1"]]
 
   :plugins [[lein-cljsbuild "1.0.3"][lein-ring "0.8.10"]]
   :ring {:handler myproject.handler/app

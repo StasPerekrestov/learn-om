@@ -1,15 +1,11 @@
 (ns myproject.routes.home
   (:require [compojure.core :refer :all]
-            [hiccup.form :refer :all]
-            [ring.middleware.json :as middleware]
-            [hiccup.core :as h]))
+            [ring.util.response :refer [response]]
+            [ring.middleware.json :refer [wrap-json-response]]))
 
 
-(defn say-hello []
-  (h/html [:h1 "Hello Word"]))
-
-
-
+(defn handler [request]
+  (response {:foo "bar"}))
 
 (defroutes home-routes
-  (GET "/" [] (say-hello)))
+  (GET "/" [] (wrap-json-response handler)))
