@@ -28,7 +28,7 @@
 (defn update-task [tasks]
   "Updates tasks with new items"
    (print "! " tasks)
-   (swap! app-state #(assoc-in % [:my-list] (apply conj (:my-list %) tasks))))
+   (swap! app-state #(assoc-in % [:my-list] (vec (concat (:my-list %) tasks)))))
 
 (go
   (let [t  (<! (GET "/"))]
