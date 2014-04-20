@@ -28,6 +28,7 @@
 (defn update-task [tasks]
   "Updates tasks with new items"
    (print "! " tasks)
+    ;lists can't be part of the app state in om. Use vectors or maps instead
    (swap! app-state #(assoc-in % [:my-list] (vec (concat (:my-list %) tasks)))))
 
 (go
