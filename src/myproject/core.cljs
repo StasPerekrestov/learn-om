@@ -14,7 +14,7 @@
   (let [ch (chan 1)]
     (xhr/send url
               (fn [event]
-                (let [res (-> event .-target .getResponseJson)]
+                (let [res (js->clj (-> event .-target .getResponseJson) :keywordize-keys true)]
                   (go (>! ch res)
                       (close! ch)))))
     ch))
@@ -25,11 +25,16 @@
 
 (enable-console-print!)
 
+(defn update-task [tasks]
+  "Updates tasks with new items"
+   (print "! " tasks)
+   (swap! app-state #(assoc-in % [:my-list] (apply conj (:my-list %) tasks))))
+
 (go
-  (let [t (js->clj (<! (GET "/")) :keywordize-keys true)]
-    (log "result is: ")
-    (print "Hello world" t)
-    ))
+  (let [t  (<! (GET "/"))]
+    (update-task t)
+    (print @app-state)))
+
 
 
 ; todo is a cursor and we are outside of render.

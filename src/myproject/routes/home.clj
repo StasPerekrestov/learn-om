@@ -5,7 +5,7 @@
 
 
 (defn handler [request]
-  (response {:foo "bar"}))
+  (response [{:text "Task1" :done false} {:text "Task2" :done false} {:text "Task3" :done true}]))
 
 (defroutes home-routes
   (GET "/" [] (wrap-json-response handler)))
