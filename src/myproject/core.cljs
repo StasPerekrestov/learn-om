@@ -25,16 +25,11 @@
 
 (enable-console-print!)
 
-(defn update-task [tasks]
-  "Updates tasks with new items"
-   (print "! " tasks)
-    ;lists can't be part of the app state in om. Use vectors or maps instead
-   (swap! app-state #(assoc-in % [:my-list] (vec (concat (:my-list %) tasks)))))
 
-(go
-  (let [t  (<! (GET "/"))]
-    (update-task t)
-    (print @app-state)))
+(defn load-data [items]
+  (go
+    (let [new-tasks  (<! (GET "/"))]
+      (om/transact! items #(vec (concat % new-tasks))))))
 
 
 
@@ -48,9 +43,16 @@
                :onClick #(handle-toggle todo)}
    (:text todo)))
 
+(defn reload-btn [todos owner]
+  (reify
+    om/IRender
+    (render [this]
+      (dom/button #js {:onClick #(load-data todos)} "Click Me"))))
+
 (defn todo-list-component [app-data owner]
   (dom/div nil
    (dom/h1 nil "My TODO List is Awesome")
+   (om/build reload-btn (:my-list app-data))
    (apply dom/ul nil (om/build-all todo-component (:my-list app-data)))))
 
 (om/root
