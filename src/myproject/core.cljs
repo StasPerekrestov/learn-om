@@ -1,8 +1,7 @@
 (ns myproject.core
   (:require [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
-            [goog.net.XhrIo :as xhr]
-            [cljs.core.async :as async :refer [chan close!]])
+            [myproject.io :refer [GET]])
   (:require-macros
     [cljs.core.async.macros :refer [go alt!]]))
 
@@ -10,21 +9,10 @@
                                 {:text "remember the milk" :done true}
                                 {:text "party like its 1999" :done false}
                                 {:text "by some milk" :done false}]}))
-(defn GET [url]
-  (let [ch (chan 1)]
-    (xhr/send url
-              (fn [event]
-                (let [res (js->clj (-> event .-target .getResponseJson) :keywordize-keys true)]
-                  (go (>! ch res)
-                      (close! ch)))))
-    ch))
 
 (defn log
   [s]
   (.log js/console (str s)))
-
-(enable-console-print!)
-
 
 (defn load-data [items]
   (go
