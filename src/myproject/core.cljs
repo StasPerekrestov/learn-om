@@ -47,13 +47,14 @@
   (reify
     om/IRender
     (render [this]
-      (dom/button #js {:onClick #(load-data todos)} "Click Me"))))
+      (dom/button #js {:onClick #(load-data todos)} "Add tasks"))))
 
 (defn todo-list-component [app-data owner]
   (dom/div nil
    (dom/h1 nil "My TODO List is Awesome")
    (om/build reload-btn (:my-list app-data))
-   (apply dom/ul nil (om/build-all todo-component (:my-list app-data)))))
+   (dom/div #js {:className "panel"}
+   (apply dom/ul nil (om/build-all todo-component (:my-list app-data))))))
 
 (om/root
  todo-list-component
