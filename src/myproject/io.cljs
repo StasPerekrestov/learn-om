@@ -14,3 +14,12 @@
                   (go (>! ch res)
                       (close! ch)))))
     ch))
+
+(defn POST [url data]
+  (let [ch (chan 1)]
+    (xhr/send url
+              (fn [event]
+                (let [res (js->clj (-> event .-target .getResponseJson) :keywordize-keys true)]
+                  (go (>! ch res)
+                      (close! ch)))))
+    ch))
