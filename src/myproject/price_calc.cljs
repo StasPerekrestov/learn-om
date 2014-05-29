@@ -1,0 +1,49 @@
+(ns myproject.price-calc
+  (:require [om.core :as om :include-macros true]
+            [om.dom :as dom :include-macros true]))
+
+(def app-state (atom {:calc {:width nil
+                             :length nil
+                             :height nil
+                             :weight nil
+                             :carriers [
+                                         {:name "EMS" :fee 10 :price_per_kg 1.5 :max_weight 30}
+                                         {:name "Priority" :fee 15 :price_per_kg 5 :max_weight 22}
+                                         {:name "Courier" :fee 20 :price_per_kg 15 :max_weight 10}]
+
+                                 }}))
+
+(defn dimensions [app-data owner]
+   (dom/div nil
+   (dom/input #js {:type "text" :placeholder "Width"})
+   (dom/input #js {:type "text" :placeholder "Length"})
+   (dom/input #js {:type "text" :placeholder "Height"})
+   (dom/input #js {:type "text" :placeholder "Weight"})))
+
+
+(defn carrier-component [carrier owner]
+  (reify
+    om/IRender
+    (render [this]
+      (dom/li nil
+        (dom/input #js {:type "radio" :name "cr"} (:name carrier))))))
+
+(defn carriers-component [carriers owner]
+  (reify
+    om/IRender
+    (render [this]
+       (apply dom/ul nil (om/build-all carrier-component carriers)))))
+
+(defn calc-component [app-data owner]
+  (dom/div nil
+     ;(om/build dimensions (:calc app-data))
+     (om/build carriers-component (:carriers (:calc app-data)))))
+
+
+
+(enable-console-print!)
+
+(om/root
+ calc-component
+  app-state
+  {:target (. js/document (getElementById "app"))})
