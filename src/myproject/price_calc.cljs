@@ -10,15 +10,16 @@
                                          {:name "EMS" :fee 10 :price_per_kg 1.5 :max_weight 30}
                                          {:name "Priority" :fee 15 :price_per_kg 5 :max_weight 22}
                                          {:name "Courier" :fee 20 :price_per_kg 15 :max_weight 10}]
-
                                  }}))
+(defn as-int [input]
+  (js/parseInt (.. input -target -value)))
 
 (defn dimensions [app-data owner]
    (dom/div nil
-   (dom/input #js {:type "text" :placeholder "Width" :onChange #(om/update! app-data [:width] (.. % -target -value))})
-   (dom/input #js {:type "text" :placeholder "Length" :onChange #(om/update! app-data [:length] (.. % -target -value))})
-   (dom/input #js {:type "text" :placeholder "Height" :onChange #(om/update! app-data [:height] (.. % -target -value))})
-   (dom/input #js {:type "text" :placeholder "Weight" :onChange #(om/update! app-data [:weight] (.. % -target -value))})))
+   (dom/input #js {:type "text" :placeholder "Width"  :onChange #(om/update! app-data [:width]  (as-int %))})
+   (dom/input #js {:type "text" :placeholder "Length" :onChange #(om/update! app-data [:length] (as-int %))})
+   (dom/input #js {:type "text" :placeholder "Height" :onChange #(om/update! app-data [:height] (as-int %))})
+   (dom/input #js {:type "text" :placeholder "Weight" :onChange #(om/update! app-data [:weight] (as-int %))})))
 
 
 (defn carrier-component [carrier owner]
@@ -35,15 +36,18 @@
        (apply dom/ul #js {:className "inline-list"} (om/build-all carrier-component carriers)))))
 
 
-;(def eval-price [calc-data]
- ; (let [{width :width length :length height :height weight :weight} calc-data]))
+(defn eval-price [calc-data]
+  (let [{width :width length :length height :height weight :weight} calc-data]
+    (if (and (number? width) (number? length) (number? height) (number? weight))
+      (* width length height weight) "error")))
+
 
 (defn eval-component [calc-data owner]
   (reify
     om/IRender
     (render [this]
       (dom/div nil
-        (dom/input #js {:type "text" :placeholder "Price" :value (:width calc-data)})))))
+        (dom/input #js {:type "text" :placeholder "Price" :value (eval-price calc-data)})))))
 
 (defn calc-component [app-data owner]
   (dom/div nil
