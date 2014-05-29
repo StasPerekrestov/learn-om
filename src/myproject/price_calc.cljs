@@ -15,10 +15,10 @@
 
 (defn dimensions [app-data owner]
    (dom/div nil
-   (dom/input #js {:type "text" :placeholder "Width"})
-   (dom/input #js {:type "text" :placeholder "Length"})
-   (dom/input #js {:type "text" :placeholder "Height"})
-   (dom/input #js {:type "text" :placeholder "Weight"})))
+   (dom/input #js {:type "text" :placeholder "Width" :onChange #(om/update! app-data [:width] (.. % -target -value))})
+   (dom/input #js {:type "text" :placeholder "Length" :onChange #(om/update! app-data [:length] (.. % -target -value))})
+   (dom/input #js {:type "text" :placeholder "Height" :onChange #(om/update! app-data [:height] (.. % -target -value))})
+   (dom/input #js {:type "text" :placeholder "Weight" :onChange #(om/update! app-data [:weight] (.. % -target -value))})))
 
 
 (defn carrier-component [carrier owner]
@@ -32,13 +32,24 @@
   (reify
     om/IRender
     (render [this]
-       (apply dom/ul nil (om/build-all carrier-component carriers)))))
+       (apply dom/ul #js {:className "inline-list"} (om/build-all carrier-component carriers)))))
+
+
+;(def eval-price [calc-data]
+ ; (let [{width :width length :length height :height weight :weight} calc-data]))
+
+(defn eval-component [calc-data owner]
+  (reify
+    om/IRender
+    (render [this]
+      (dom/div nil
+        (dom/input #js {:type "text" :placeholder "Price" :value (:width calc-data)})))))
 
 (defn calc-component [app-data owner]
   (dom/div nil
-     ;(om/build dimensions (:calc app-data))
-     (om/build carriers-component (:carriers (:calc app-data)))))
-
+     (om/build dimensions (:calc app-data))
+     (om/build carriers-component (:carriers (:calc app-data)))
+     (om/build eval-component (:calc app-data))))
 
 
 (enable-console-print!)
