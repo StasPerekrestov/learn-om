@@ -2,24 +2,33 @@
   (:require [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]))
 
-(def app-state (atom {:calc {:width nil
-                             :length nil
-                             :height nil
-                             :weight nil
+(def app-state (atom {:calc {
+                             :dimensions [
+                                          {:dim :width :value nil :title "Width"}
+                                          {:dim :length :value nil :title "Lenght"}
+                                          {:dim :height :value nil :title "Height"}
+                                          {:dim :weight :value nil :title "Weight"}
+                                          ]
                              :carriers [
                                          {:name "EMS" :fee 10 :price_per_kg 1.5 :max_weight 30}
                                          {:name "Priority" :fee 15 :price_per_kg 5 :max_weight 22}
                                          {:name "Courier" :fee 20 :price_per_kg 15 :max_weight 10}]
                                  }}))
 (defn as-int [input]
-  (js/parseInt (.. input -target -value)))
+  (js/parseFloat (.. input -target -value)))
 
-(defn dimensions [app-data owner]
-   (dom/div nil
-   (dom/input #js {:type "text" :placeholder "Width"  :onChange #(om/update! app-data [:width]  (as-int %))})
-   (dom/input #js {:type "text" :placeholder "Length" :onChange #(om/update! app-data [:length] (as-int %))})
-   (dom/input #js {:type "text" :placeholder "Height" :onChange #(om/update! app-data [:height] (as-int %))})
-   (dom/input #js {:type "text" :placeholder "Weight" :onChange #(om/update! app-data [:weight] (as-int %))})))
+(defn dimension-component [dimension owner]
+  (reify
+    om/IRender
+    (render [this]
+       (dom/input #js {:type "text" :placeholder (:title dimension) :onChange #(om/update! dimension :value (as-int %))}))))
+
+(defn dimensions-component [dimensions owner]
+  (reify
+    om/IRender
+    (render [this]
+     (dom/div nil
+       (apply dom/div nil (om/build-all dimension-component dimensions))))))
 
 
 (defn carrier-component [carrier owner]
@@ -51,9 +60,9 @@
 
 (defn calc-component [app-data owner]
   (dom/div nil
-     (om/build dimensions (:calc app-data))
+     (om/build dimensions-component (:dimensions (:calc app-data)))
      (om/build carriers-component (:carriers (:calc app-data)))
-     (om/build eval-component (:calc app-data))))
+     (om/build eval-component (:dimensions (:calc app-data)))))
 
 
 (enable-console-print!)
