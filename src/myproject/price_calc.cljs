@@ -3,32 +3,28 @@
             [om.dom :as dom :include-macros true]))
 
 (def app-state (atom {:calc {
-                             :dimensions [
-                                          {:dim :width :value nil :title "Width"}
-                                          {:dim :length :value nil :title "Lenght"}
-                                          {:dim :height :value nil :title "Height"}
-                                          {:dim :weight :value nil :title "Weight"}
-                                          ]
+                             :dimensions {:width nil
+                                          :length nil
+                                          :height nil
+                                          :weight nil}
                              :carriers [
                                          {:name "EMS" :fee 10 :price_per_kg 1.5 :max_weight 30}
                                          {:name "Priority" :fee 15 :price_per_kg 5 :max_weight 22}
                                          {:name "Courier" :fee 20 :price_per_kg 15 :max_weight 10}]
                                  }}))
-(defn as-int [input]
-  (js/parseFloat (.. input -target -value)))
 
-(defn dimension-component [dimension owner]
-  (reify
-    om/IRender
-    (render [this]
-       (dom/input #js {:type "text" :placeholder (:title dimension) :onChange #(om/update! dimension :value (as-int %))}))))
+(defn handle-dimension-change [e dimensions upd-dimension]
+  (om/update! dimensions upd-dimension (js/parseFloat (.. e -target -value))))
 
 (defn dimensions-component [dimensions owner]
   (reify
     om/IRender
     (render [this]
      (dom/div nil
-       (apply dom/div nil (om/build-all dimension-component dimensions))))))
+       (dom/input #js {:type "text" :placeholder "Width"  :onChange #(handle-dimension-change % dimensions :width)})
+       (dom/input #js {:type "text" :placeholder "Length" :onChange #(handle-dimension-change % dimensions :length)})
+       (dom/input #js {:type "text" :placeholder "Height" :onChange #(handle-dimension-change % dimensions :height)})
+       (dom/input #js {:type "text" :placeholder "Weight" :onChange #(handle-dimension-change % dimensions :weight)})))))
 
 
 (defn carrier-component [carrier owner]
@@ -46,6 +42,7 @@
 
 
 (defn eval-price [calc-data]
+  (print calc-data)
   (let [{width :width length :length height :height weight :weight} calc-data]
     (if (and (number? width) (number? length) (number? height) (number? weight))
       (* width length height weight) "error")))
