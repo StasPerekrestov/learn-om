@@ -7,6 +7,8 @@
                                           :length nil
                                           :height nil
                                           :weight nil}
+
+                             :selected-carrier nil
                              :carriers [
                                          {:name "EMS" :fee 10 :price_per_kg 1.5 :max_weight 30 :selected true}
                                          {:name "Priority" :fee 15 :price_per_kg 5 :max_weight 22 :selected false}
@@ -62,11 +64,12 @@
         (dom/input #js {:type "text" :placeholder "Price" :value (eval-price calc-data)})))))
 
 (defn calc-component [app-data owner]
-  (dom/div nil
+  (apply dom/div nil
      (let [calc (:calc app-data)]
-       ;(om/build dimensions-component (:dimensions calc))
-       (om/build carriers-component (:carriers calc))
-       ;(om/build eval-component (:calc app-data)))))
+       [(om/build dimensions-component (:dimensions calc))
+        (om/build carriers-component (:carriers calc))
+        (om/build eval-component (:calc app-data))
+        ]
        )))
 
 
