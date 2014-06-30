@@ -10,9 +10,9 @@
 
                              :selected-carrier nil
                              :carriers [
-                                         {:name "EMS" :fee 10 :price_per_kg 1.5 :max_weight 30 :selected true}
-                                         {:name "Priority" :fee 15 :price_per_kg 5 :max_weight 22 :selected false}
-                                         {:name "Courier" :fee 20 :price_per_kg 15 :max_weight 10 :selected false}]
+                                         {:name "EMS" :fee 10 :price_per_kg 1.5 :max_weight 30}
+                                         {:name "Priority" :fee 15 :price_per_kg 5 :max_weight 22}
+                                         {:name "Courier" :fee 20 :price_per_kg 15 :max_weight 10}]
                                  }}))
 
 (defn handle-dimension-change [e dimensions target-dimension]
