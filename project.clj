@@ -3,7 +3,7 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-2234"]
+                 [org.clojure/clojurescript "0.0-2268"]
                  [org.clojure/core.async "0.1.303.0-886421-alpha"]
                  [om "0.6.4"]
                  [compojure "1.1.8"]
@@ -11,7 +11,7 @@
                  [ring-server "0.3.1"]
                  [ring/ring-json "0.3.1"]]
 
-  :plugins [[lein-cljsbuild "1.0.3"][lein-ring "0.8.10"]]
+  :plugins [[lein-cljsbuild "1.0.3"][lein-ring "0.8.11"]]
   :ring {:handler myproject.handler/app
          :init myproject.handler/init
          :destroy myproject.handler/destroy
