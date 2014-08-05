@@ -3,9 +3,9 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-2277"]
+                 [org.clojure/clojurescript "0.0-2280"]
                  [org.clojure/core.async "0.1.303.0-886421-alpha"]
-                 [om "0.7.0"]
+                 [om "0.7.1"]
                  [compojure "1.1.8"]
                  [hiccup "1.0.5"]
                  [ring-server "0.3.1"]
