@@ -4,7 +4,7 @@
 
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2280"]
-                 [org.clojure/core.async "0.1.303.0-886421-alpha"]
+                 [org.clojure/core.async "0.1.319.0-6b1aca-alpha"]
                  [om "0.7.1"]
                  [compojure "1.1.8"]
                  [hiccup "1.0.5"]
