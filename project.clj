@@ -11,7 +11,7 @@
                  [ring-server "0.3.1"]
                  [ring/ring-json "0.3.1"]]
 
-  :plugins [[lein-cljsbuild "1.0.3"][lein-ring "0.8.11"]]
+  :plugins [[lein-cljsbuild "1.0.4-SNAPSHOT"][lein-ring "0.8.11"]]
   :ring {:handler myproject.handler/app
          :init myproject.handler/init
          :destroy myproject.handler/destroy
