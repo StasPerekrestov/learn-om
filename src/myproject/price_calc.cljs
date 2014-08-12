@@ -22,7 +22,8 @@
   (reify
     om/IRender
     (render [_]
-     (dom/div nil
+     (dom/div #js {:className "panel callout radius"}
+       (dom/h5 nil "Dimensions")
        (dom/input #js {:type "text" :placeholder "Width"  :onChange #(handle-dimension-change % dimensions :width)})
        (dom/input #js {:type "text" :placeholder "Length" :onChange #(handle-dimension-change % dimensions :length)})
        (dom/input #js {:type "text" :placeholder "Height" :onChange #(handle-dimension-change % dimensions :height)})
