@@ -16,7 +16,6 @@
                                  }}))
 
 (defn handle-dimension-change [e dimensions target-dimension]
-  (print "changing " target-dimension)
   (om/update! dimensions target-dimension (js/parseFloat (.. e -target -value))))
 
 (defn dimensions-component [dimensions owner]
@@ -38,7 +37,6 @@
     om/IRender
     (render [_]
       (dom/li nil
-         (print "test arg: ")
         (dom/input #js {:type "radio" :name "cr" :checked (:selected carrier) :onChange #(handle-carrier-select % carrier)} (:name carrier))))))
 
 (defn carriers-component [carriers owner]
@@ -52,8 +50,8 @@
 
 (defn eval-price [calc-data]
   (let [{width :width length :length height :height weight :weight} (:dimensions calc-data)]
-    (if (and (number? width) (number? length) (number? height) (number? weight))
-      (+ width length ) "error")))
+    (if (every? number? (list width length height weight))
+      (+ width length) "Correct all the dimensions")))
 
 
 (defn eval-component [calc-data owner]
@@ -64,13 +62,14 @@
         (dom/input #js {:type "text" :placeholder "Price" :value (eval-price calc-data)})))))
 
 (defn calc-component [app-data owner]
-  (apply dom/div nil
-     (let [calc (:calc app-data)]
-       [(om/build dimensions-component (:dimensions calc))
-        (om/build carriers-component (:carriers calc))
-        (om/build eval-component (:calc app-data))
-        ]
-       )))
+  (reify
+    om/IRender
+    (render [_]
+      (apply dom/div nil
+         (let [calc (:calc app-data)]
+           [(om/build dimensions-component (:dimensions calc))
+            (om/build carriers-component (:carriers calc))
+            (om/build eval-component (:calc app-data))])))))
 
 
 (enable-console-print!)
