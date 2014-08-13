@@ -5,13 +5,17 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2311"]
                  [org.clojure/core.async "0.1.319.0-6b1aca-alpha"]
+                 [com.facebook/react "0.11.1"]
                  [om "0.7.1"]
                  [compojure "1.1.8"]
+                 [figwheel "0.1.4-SNAPSHOT"]
                  [hiccup "1.0.5"]
                  [ring-server "0.3.1"]
                  [ring/ring-json "0.3.1"]]
 
-  :plugins [[lein-cljsbuild "1.0.4-SNAPSHOT"][lein-ring "0.8.11"]]
+  :plugins [[lein-cljsbuild "1.0.4-SNAPSHOT"]
+            [lein-ring "0.8.11"]
+            [lein-figwheel "0.1.4-SNAPSHOT"]]
   :ring {:handler myproject.handler/app
          :init myproject.handler/init
          :destroy myproject.handler/destroy
@@ -24,10 +28,18 @@
   :source-paths ["src"]
 
   :cljsbuild {
-    :builds [{:id "myproject"
+    :builds [{:id "dev"
               :source-paths ["src"]
               :compiler {
-                :output-to "resources/public/js/myproject.js"
+                :output-to  "resources/public/js/myproject.js"
                 :output-dir "resources/public/js/out"
                 :optimizations :none
-                :source-map true}}]})
+                :source-map true
+                :preamble ["react/react.min.js"]
+                :externs  ["react/externs/react.js"]}}]
+    :figwheel {
+             :http-server-root "public" ;; default and assumes "resources"
+             :server-port 3449 ;; default
+             :css-dirs ["public/resources/css"] ;; watch and update CSS
+             ;; :ring-handler hello-world.server/handler
+             }})

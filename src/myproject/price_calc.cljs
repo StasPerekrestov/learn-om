@@ -1,8 +1,9 @@
 (ns myproject.price-calc
   (:require [om.core :as om :include-macros true]
-            [om.dom :as dom :include-macros true]))
+            [om.dom :as dom :include-macros true]
+            [figwheel.client :as fw]))
 
-(def app-state (atom {:calc {
+(defonce app-state (atom {:calc {
                              :dimensions {:width nil
                                           :length nil
                                           :height nil
@@ -22,12 +23,14 @@
   (reify
     om/IRender
     (render [_]
-     (dom/div #js {:className "panel callout radius"}
-       (dom/h5 nil "Dimensions")
-       (dom/input #js {:type "text" :placeholder "Width"  :onChange #(handle-dimension-change % dimensions :width)})
-       (dom/input #js {:type "text" :placeholder "Length" :onChange #(handle-dimension-change % dimensions :length)})
-       (dom/input #js {:type "text" :placeholder "Height" :onChange #(handle-dimension-change % dimensions :height)})
-       (dom/input #js {:type "text" :placeholder "Weight" :onChange #(handle-dimension-change % dimensions :weight)})))))
+     (let [{width :width length :length height :height weight :weight} dimensions]
+       (dom/div #js {:className "panel callout radius"}
+         (print "width is " width)
+         (dom/h5 nil "Dimensions")
+         (dom/input #js {:type "text" :value width   :placeholder "Width"  :onChange #(handle-dimension-change % dimensions :width)})
+         (dom/input #js {:type "text" :value length  :placeholder "Length" :onChange #(handle-dimension-change % dimensions :length)})
+         (dom/input #js {:type "text" :value height  :placeholder "Height" :onChange #(handle-dimension-change % dimensions :height)})
+         (dom/input #js {:type "text" :value weight  :placeholder "Weight" :onChange #(handle-dimension-change % dimensions :weight)}))))))
 
 
 (defn handle-carrier-select [e carrier]
@@ -52,7 +55,7 @@
 (defn eval-price [calc-data]
   (let [{width :width length :length height :height weight :weight} (:dimensions calc-data)]
     (if (every? number? (list width length height weight))
-      (+ width length) "Correct all the dimensions")))
+      (str "price is num: " (+ width length)) "Correct all the dimensions")))
 
 
 (defn eval-component [calc-data owner]
@@ -72,10 +75,17 @@
             (om/build carriers-component (:carriers calc))
             (om/build eval-component (:calc app-data))])))))
 
-
 (enable-console-print!)
+(comment
+  (get-in (deref app-state) [:calc :dimensions])
+  )
 
 (om/root
  calc-component
   app-state
   {:target (. js/document (getElementById "app"))})
+
+(fw/watch-and-reload
+ :jsload-callback (fn []
+                    ;; (stop-and-start-my app)
+                    ))
