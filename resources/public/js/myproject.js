@@ -12,7 +12,7 @@ goog.addDependency("../clojure/string.js", ['clojure.string'], ['goog.string', '
 goog.addDependency("../cljs/reader.js", ['cljs.reader'], ['goog.string', 'cljs.core', 'goog.string.StringBuffer']);
 goog.addDependency("../figwheel/client.js", ['figwheel.client'], ['goog.net.jsloader', 'cljs.core', 'cljs.core.async', 'clojure.string', 'cljs.reader']);
 goog.addDependency("../om/core.js", ['om.core'], ['cljs.core', 'om.dom', 'goog.ui.IdGenerator']);
-goog.addDependency("../myproject/price_calc.js", ['myproject.price_calc'], ['cljs.core', 'om.dom', 'figwheel.client', 'om.core']);
+goog.addDependency("../myproject/price_calc.js", ['myproject.price_calc'], ['cljs.core', 'om.dom', 'cljs.core.async', 'figwheel.client', 'om.core']);
 goog.addDependency("../myproject/io.js", ['myproject.io'], ['goog.net.XhrIo', 'cljs.core', 'om.dom', 'cljs.core.async', 'om.core']);
 goog.addDependency("../myproject/core.js", ['myproject.core'], ['cljs.core', 'om.dom', 'myproject.io', 'om.core']);
 goog.addDependency("../myproject/login.js", ['myproject.login'], ['cljs.core', 'om.dom', 'myproject.io', 'om.core']);

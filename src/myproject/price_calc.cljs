@@ -1,19 +1,21 @@
 (ns myproject.price-calc
+  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
+            [cljs.core.async :refer [put! chan <!]]
             [figwheel.client :as fw]))
 
 (defonce app-state (atom {:calc {
-                             :dimensions {:width nil
-                                          :length nil
-                                          :height nil
-                                          :weight nil}
-
-                             :selected-carrier nil
-                             :carriers [
-                                         {:name "EMS" :fee 10 :price_per_kg 1.5 :max_weight 30}
-                                         {:name "Priority" :fee 15 :price_per_kg 5 :max_weight 22}
-                                         {:name "Courier" :fee 20 :price_per_kg 15 :max_weight 10}]
+                                 :dimensions {:width nil
+                                              :length nil
+                                              :height nil
+                                              :weight nil}
+                                 :carriers {
+                                            :selected nil
+                                            :items [
+                                                       {:name "EMS" :fee 10 :price_per_kg 1.5 :max_weight 30}
+                                                       {:name "Priority" :fee 15 :price_per_kg 5 :max_weight 22}
+                                                       {:name "Courier" :fee 20 :price_per_kg 15 :max_weight 10}]}
                                  }}))
 
 (defn handle-dimension-change [e dimensions target-dimension]
@@ -35,26 +37,36 @@
 (defn handle-carrier-select [e carrier]
   (om/update! carrier [:selected] (.. e -target -checked)))
 
-(defn carrier-component [carrier owner]
+(defn carrier-component [carrier-data owner]
   (reify
-    om/IRender
-    (render [_]
+    om/IRenderState
+    (render-state [this {:keys [select]}]
+      (let [carrier (:carrier carrier-data)]
       (dom/li nil
-        (dom/input #js {:type "radio" :name "cr" :checked (:selected carrier) :onChange #(handle-carrier-select % carrier)} (:name carrier))))))
+        (dom/input #js {:type "radio" :checked (true? (:selected carrier-data)) :name "cr" :onChange (fn [e] (put! select @carrier))} (:name carrier)))))))
 
-(defn carriers-view [carriers owner]
+(defn carriers-view [carriers-data owner]
   (reify
-    om/IRender
-    (render [_]
-       (apply dom/ul #js {:className "inline-list"} (om/build-all carrier-component carriers)))))
+    om/IInitState
+    (init-state [_]
+      {:select (chan)})
+    om/IWillMount
+    (will-mount [_]
+      (let [select (om/get-state owner :select)]
+        (go (loop []
+          (let [selected-item (<! select)]
+            (om/update! carriers-data [:selected] selected-item)
+            (recur))))))
+    om/IRenderState
+    (render-state [this {:keys [select]}]
+       (apply dom/ul #js {:className "inline-list"}
+              (om/build-all carrier-component (map #(hash-map :carrier % :selected (= % (:selected carriers-data))) (:items carriers-data))  {:init-state {:select select}})))))
 
-(def moveFastFee
-  15)
+(def moveFastFee 15)
 
 (defn eval-price [calc-data]
   (let [{width :width length :length height :height weight :weight} (:dimensions calc-data)
         carrier (filter #(true? (:selected %)) (:carriers calc-data))]
-    (print carrier)
     (if (every? number? (list width length height weight))
       (str "price is num: " (+ width length)) "Correct all the dimensions")))
 
@@ -73,12 +85,12 @@
       (apply dom/div nil
          (let [calc (:calc app-data)]
            [(om/build dimensions-view (:dimensions calc))
-            (om/build carriers-view (:carriers calc))
-            (om/build eval-component (:calc app-data))])))))
+           (om/build carriers-view (:carriers calc))
+           (om/build eval-component calc)])))))
 
 (enable-console-print!)
 (comment
-  (get-in (deref app-state) [:calc :dimensions])
+  (get-in (deref app-state) [:calc :carriers :selected])
   )
 
 (om/root
