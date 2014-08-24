@@ -25,7 +25,6 @@
     (render [_]
      (let [{width :width length :length height :height weight :weight} dimensions]
        (dom/div #js {:className "panel callout radius"}
-         (print "width is " width)
          (dom/h5 nil "Dimensions")
          (dom/input #js {:type "text" :value width   :placeholder "Width"  :onChange #(handle-dimension-change % dimensions :width)})
          (dom/input #js {:type "text" :value length  :placeholder "Length" :onChange #(handle-dimension-change % dimensions :length)})
@@ -53,7 +52,9 @@
   15)
 
 (defn eval-price [calc-data]
-  (let [{width :width length :length height :height weight :weight} (:dimensions calc-data)]
+  (let [{width :width length :length height :height weight :weight} (:dimensions calc-data)
+        carrier (filter #(true? (:selected %)) (:carriers calc-data))]
+    (print carrier)
     (if (every? number? (list width length height weight))
       (str "price is num: " (+ width length)) "Correct all the dimensions")))
 
