@@ -19,7 +19,7 @@
 (defn handle-dimension-change [e dimensions target-dimension]
   (om/update! dimensions target-dimension (js/parseFloat (.. e -target -value))))
 
-(defn dimensions-component [dimensions owner]
+(defn dimensions-view [dimensions owner]
   (reify
     om/IRender
     (render [_]
@@ -42,7 +42,7 @@
       (dom/li nil
         (dom/input #js {:type "radio" :name "cr" :checked (:selected carrier) :onChange #(handle-carrier-select % carrier)} (:name carrier))))))
 
-(defn carriers-component [carriers owner]
+(defn carriers-view [carriers owner]
   (reify
     om/IRender
     (render [_]
@@ -72,8 +72,8 @@
     (render [_]
       (apply dom/div nil
          (let [calc (:calc app-data)]
-           [(om/build dimensions-component (:dimensions calc))
-            (om/build carriers-component (:carriers calc))
+           [(om/build dimensions-view (:dimensions calc))
+            (om/build carriers-view (:carriers calc))
             (om/build eval-component (:calc app-data))])))))
 
 (enable-console-print!)
