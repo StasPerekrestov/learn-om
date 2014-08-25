@@ -4,7 +4,7 @@
 
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2311"]
-                 [org.clojure/core.async "0.1.319.0-6b1aca-alpha"]
+                 [org.clojure/core.async "0.1.338.0-5c5012-alpha"]
                  [com.facebook/react "0.11.1"]
                  [om "0.7.1"]
                  [compojure "1.1.8"]
