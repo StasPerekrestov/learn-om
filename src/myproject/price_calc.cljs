@@ -33,17 +33,17 @@
          (dom/input #js {:type "text" :value height  :placeholder "Height" :onChange #(handle-dimension-change % dimensions :height)})
          (dom/input #js {:type "text" :value weight  :placeholder "Weight" :onChange #(handle-dimension-change % dimensions :weight)}))))))
 
-
-(defn handle-carrier-select [e carrier]
-  (om/update! carrier [:selected] (.. e -target -checked)))
-
-(defn carrier-component [carrier-data owner]
+(defn carrier-view [carrier-data owner]
   (reify
     om/IRenderState
     (render-state [this {:keys [select]}]
       (let [carrier (:carrier carrier-data)]
       (dom/li nil
-        (dom/input #js {:type "radio" :checked (true? (:selected carrier-data)) :name "cr" :onChange (fn [e] (put! select @carrier))} (:name carrier)))))))
+        (dom/input #js {:type "radio"
+                        :checked (true? (:selected carrier-data))
+                        :name "cr"
+                        :onChange (fn [e] (put! select @carrier))}
+                       (:name carrier)))))))
 
 (defn carriers-view [carriers-data owner]
   (reify
@@ -60,7 +60,10 @@
     om/IRenderState
     (render-state [this {:keys [select]}]
        (apply dom/ul #js {:className "inline-list"}
-              (om/build-all carrier-component (map #(hash-map :carrier % :selected (= % (:selected carriers-data))) (:items carriers-data))  {:init-state {:select select}})))))
+              (om/build-all carrier-view
+                            (map #(hash-map :carrier % :selected (= % (:selected carriers-data)))
+                            (:items carriers-data))
+                            {:init-state {:select select}})))))
 
 (def moveFastFee 15)
 
