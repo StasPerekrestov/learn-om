@@ -18,8 +18,20 @@
                                                        {:name "Courier" :fee 20 :price_per_kg 15 :max_weight 10}]}
                                  }}))
 
-(defn handle-dimension-change [e dimensions target-dimension]
-  (om/update! dimensions target-dimension (js/parseFloat (.. e -target -value))))
+(defn handle-dimension-change [newVal dimensions target-dimension]
+         (print value)
+  (om/update! dimensions target-dimension (js/parseFloat newVal)))
+
+(defn text-box[props owner]
+  (reify
+    om/IRender
+    (render [_]
+       (let [{value :value placeholder :placeholder onChange :onChange} props]
+       (dom/input #js {:type "text"
+                       :value value
+                       :placeholder placeholder
+                       :onChange #(-> (.. % -target -value)
+                                      onChange)})))))
 
 (defn dimensions-view [dimensions owner]
   (reify
@@ -28,10 +40,24 @@
      (let [{width :width length :length height :height weight :weight} dimensions]
        (dom/div #js {:className "panel callout radius"}
          (dom/h5 nil "Dimensions")
-         (dom/input #js {:type "text" :value width   :placeholder "Width"  :onChange #(handle-dimension-change % dimensions :width)})
-         (dom/input #js {:type "text" :value length  :placeholder "Length" :onChange #(handle-dimension-change % dimensions :length)})
-         (dom/input #js {:type "text" :value height  :placeholder "Height" :onChange #(handle-dimension-change % dimensions :height)})
-         (dom/input #js {:type "text" :value weight  :placeholder "Weight" :onChange #(handle-dimension-change % dimensions :weight)}))))))
+         (om/build text-box
+                   {:value width
+                    :placeholder "Width"
+                    :onChange #(handle-dimension-change % dimensions :width)})
+          (om/build text-box
+                   {:value length
+                    :placeholder "Lenght"
+                    :onChange #(handle-dimension-change % dimensions :length)})
+         (om/build text-box
+                   {:value height
+                    :placeholder "Height"
+                    :onChange #(handle-dimension-change % dimensions :height)})
+          (om/build text-box
+                   {:value weight
+                    :placeholder "Weight"
+                    :onChange #(handle-dimension-change % dimensions :weight)})
+
+        )))))
 
 (defn carrier-view [carrier-data owner]
   (reify
@@ -94,6 +120,7 @@
 (enable-console-print!)
 (comment
   (get-in (deref app-state) [:calc :carriers :selected])
+  (get-in (deref app-state) [:calc :dimensions])
   )
 
 (om/root
