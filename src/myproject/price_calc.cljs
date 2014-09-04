@@ -18,10 +18,6 @@
                                                        {:name "Courier" :fee 20 :price_per_kg 15 :max_weight 10}]}
                                  }}))
 
-(defn handle-dimension-change [newVal dimensions target-dimension]
-         (print newVal)
-  (om/update! dimensions target-dimension (js/parseFloat newVal)))
-
 (defn text-box[props owner]
   (reify
     om/IRender
@@ -37,47 +33,35 @@
   (reify
      om/IInitState
     (init-state [_]
-      {:width-ch  (chan)
-       :height-ch (chan)
-       :length-ch (chan)
-       :weight-ch (chan)
-       })
+      {:dimension-ch  (chan)})
     om/IWillMount
     (will-mount [_]
-      (let [width  (om/get-state owner :width-ch)
-            height (om/get-state owner :height-ch)
-            length (om/get-state owner :length-ch)
-            weight (om/get-state owner :weight-ch)]
+      (let [dims-ch (om/get-state owner :dimension-ch)]
         (go (loop []
-          (let [[v c] (alts! [width height length weight])]
-            (cond
-             (= c width)  (print "YES-WIDTH: "  v)
-             (= c height) (print "YES-HEIGHT: " v)
-             (= c length) (print "YES-LENGTH: " v)
-             (= c weight) (print "YES-WEIGHT: " v)
-             )
+          (let [{:keys [dim value]} (<! dims-ch)]
+            (om/update! dimensions dim (js/parseFloat value))
             (recur))))))
     om/IRenderState
-    (render-state [_ {:keys [width-ch height-ch length-ch weight-ch]}]
+    (render-state [_ {:keys [dimension-ch]}]
      (let [{width :width length :length height :height weight :weight} dimensions]
        (dom/div #js {:className "panel callout radius"}
          (dom/h5 nil "Dimensions")
          (om/build text-box
                    {:value width
                     :placeholder "Width"
-                    :onChange #(put! width-ch %)})
+                    :onChange #(put! dimension-ch {:dim :width :value %})})
           (om/build text-box
                    {:value length
                     :placeholder "Lenght"
-                    :onChange #(put! length-ch %)})
+                    :onChange #(put! dimension-ch {:dim :length :value %})})
          (om/build text-box
                    {:value height
                     :placeholder "Height"
-                    :onChange #(put! height-ch %)})
-          (om/build text-box
+                    :onChange #(put! dimension-ch {:dim :height :value %})})
+         (om/build text-box
                    {:value weight
                     :placeholder "Weight"
-                    :onChange #(put! weight-ch %)})
+                    :onChange #(put! dimension-ch {:dim :weight :value %})})
 
         )))))
 
