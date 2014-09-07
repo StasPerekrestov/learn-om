@@ -104,9 +104,10 @@
 
 (defn eval-price [calc-data]
   (let [{width :width length :length height :height weight :weight} (:dimensions calc-data)
-        carrier (filter #(true? (:selected %)) (:carriers calc-data))]
+        carrier (get-in calc-data [:carriers :selected])]
     (if (every? number? (list width length height weight))
-      (str "price is num: " (+ width length)) "Correct all the dimensions")))
+      (str "price is num: " (+ moveFastFee (:fee carrier) (* weight (:price_per_kg carrier))))
+       "Correct all the dimensions")))
 
 
 (defn eval-component [calc-data owner]
