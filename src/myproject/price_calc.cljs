@@ -24,10 +24,13 @@
     (render [_]
        (let [{value :value placeholder :placeholder onChange :onChange} props]
        (dom/input #js {:type "text"
-                       :value value
+                       :value (if (nil? value) "" value)
                        :placeholder placeholder
                        :onChange #(-> (.. % -target -value)
                                       onChange)})))))
+(defn to-float[v]
+  (let [n (js/parseFloat v)]
+  (if (js/isNaN n) nil n)))
 
 (defn dimensions-view [dimensions owner]
   (reify
@@ -39,7 +42,7 @@
       (let [dims-ch (om/get-state owner :dimension-ch)]
         (go (loop []
           (let [{:keys [dim value]} (<! dims-ch)]
-            (om/update! dimensions dim (js/parseFloat value))
+            (om/update! dimensions dim (to-float value))
             (recur))))))
     om/IRenderState
     (render-state [_ {:keys [dimension-ch]}]
