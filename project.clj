@@ -6,7 +6,7 @@
                  [org.clojure/clojurescript "0.0-2322"]
                  [org.clojure/core.async "0.1.338.0-5c5012-alpha"]
                  [com.facebook/react "0.11.1"]
-                 [om "0.7.1"]
+                 [om "0.7.3"]
                  [compojure "1.1.8"]
                  [figwheel "0.1.4-SNAPSHOT"]
                  [hiccup "1.0.5"]
