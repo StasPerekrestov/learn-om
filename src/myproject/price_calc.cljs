@@ -131,6 +131,7 @@
 (comment
   (get-in (deref app-state) [:calc :carriers :selected])
   (get-in (deref app-state) [:calc :dimensions])
+  (swap! app-state update-in [:calc :dimensions :width] (fn [n] (inc n)))
   )
 
 (om/root
