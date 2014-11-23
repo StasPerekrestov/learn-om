@@ -3,19 +3,19 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-2342"]
-                 [org.clojure/core.async "0.1.338.0-5c5012-alpha"]
-                 [com.facebook/react "0.11.1"]
-                 [om "0.7.3"]
-                 [compojure "1.1.8"]
-                 [figwheel "0.1.4-SNAPSHOT"]
+                 [org.clojure/clojurescript "0.0-2371"]
+                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]
+                 [com.facebook/react "0.11.2"]
+                 [om "0.8.0-alpha1"]
+                 [compojure "1.2.1"]
+                 [figwheel "0.1.5-SNAPSHOT"]
                  [hiccup "1.0.5"]
                  [ring-server "0.3.1"]
                  [ring/ring-json "0.3.1"]]
 
   :plugins [[lein-cljsbuild "1.0.4-SNAPSHOT"]
-            [lein-ring "0.8.11"]
-            [lein-figwheel "0.1.4-SNAPSHOT"]]
+            [lein-ring "0.8.13"]
+            [lein-figwheel "0.1.5-SNAPSHOT"]]
   :ring {:handler myproject.handler/app
          :init myproject.handler/init
          :destroy myproject.handler/destroy
